@@ -1,2 +1,2 @@
 # FoundryLottery
-A decentralised lottery system enabled by smart contracts.
+A decentralised lottery system enabled by smart contracts and VRF's.
