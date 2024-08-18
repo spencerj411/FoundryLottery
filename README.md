@@ -1,6 +1,6 @@
 NOTE: Currently Work in Progress
 # FoundryLottery
-A decentralised lottery system enabled by smart contracts and VRF's.
+A decentralised automated lottery system enabled by smart contracts and Chainlink VRF's and Automation.
 
 # Getting Started
 ## Quick Start
