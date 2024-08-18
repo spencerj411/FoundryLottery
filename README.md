@@ -7,6 +7,6 @@ A decentralised automated lottery system enabled by smart contracts and Chainlin
 ```
 git clone https://github.com/spencerj411/FoundryLottery.git
 cd FoundryLottery
-forge install foundry-rs/forge-std
+forge install foundry-rs/forge-std --no-commit
 forge install smartcontractkit/chainlink-brownie-contracts --no-commit
 ```
