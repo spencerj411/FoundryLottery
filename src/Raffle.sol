@@ -64,6 +64,9 @@ contract Raffle is VRFConsumerBaseV2Plus {
     }
 
     function pickWinner() external {
+        if ((block.timestamp - s_lastStartTimestamp) < i_interval) {
+            revert();
+        }
         uint256 requestId = s_vrfCoordinator.requestRandomWords(
             VRFV2PlusClient.RandomWordsRequest({
                 keyHash: i_gasLane,
