@@ -53,11 +53,13 @@ contract FundSubscription is Script {
             vm.stopBroadcast();
         } else {
             // if blockchain is either testnet or a mainnet (not a local chain)
+            vm.startBroadcast();
             LinkToken(activeConfig.link).transferAndCall(
                 activeConfig.vrfCoordinator,
                 CONSTANTS.LINK_FUND_AMOUNT,
                 abi.encode(subId)
             );
+            vm.stopBroadcast();
         }
         console.log(
             "FundSubscription - VRF Subscription funded with the subscription ID",
@@ -82,9 +84,11 @@ contract AddConsumer is Script {
         }
         address mostRecentlyDeployedRaffleContract = DevOpsTools
             .get_most_recent_deployment("Raffle", block.chainid);
+        vm.startBroadcast();
         VRFCoordinatorV2_5Mock(activeConfig.vrfCoordinator).addConsumer(
             subId,
             mostRecentlyDeployedRaffleContract
         );
+        vm.stopBroadcast();
     }
 }
