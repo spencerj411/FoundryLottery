@@ -6,7 +6,7 @@ import {DeployRaffle} from "script/DeployRaffle.s.sol";
 import {HelperConfig} from "script/HelperConfig.s.sol";
 import {Raffle} from "src/Raffle.sol";
 
-import {MOCK_CONSTANTS} from "script/libraries/MockConstants.sol";
+import {CONSTANTS} from "script/libraries/Constants.sol";
 
 contract RaffleTest is Test {
     event EnteredRaffle(address indexed player);
