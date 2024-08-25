@@ -14,4 +14,4 @@ docs/
 .env
 
 # Foundry packages
-lib/
+/lib/
