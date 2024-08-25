@@ -14,6 +14,7 @@ contract DeployRaffle is Script {
         HelperConfig helperConfig = new HelperConfig();
         HelperConfig.NetworkConfig memory networkConfig = helperConfig
             .getActiveConfig();
+        vm.startBroadcast();
         Raffle raffle = new Raffle(
             networkConfig.entranceFee,
             networkConfig.interval,
@@ -22,6 +23,7 @@ contract DeployRaffle is Script {
             networkConfig.gasLane,
             networkConfig.callbackGasLimit
         );
+        vm.stopBroadcast();
         return (raffle, helperConfig);
     }
 }
