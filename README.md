@@ -1,6 +1,8 @@
 NOTE: Currently Work in Progress
 # FoundryLottery
 A decentralised automated lottery system enabled by smart contracts and Chainlink VRF's and Automation.
+I am creating this project to practice my knowledge and skills in blockchain, smart contract development with Foundry, and implementing Chainlink's VRF and Automation.
+I am implementhing this project myself, with my own code, guided by the [Cyfrin Updraft's smart contract development course](https://github.com/Cyfrin/foundry-full-course-cu).
 
 # Getting Started
 ## Quick Start
