@@ -28,7 +28,7 @@ contract HelperConfig is Script {
                 entranceFee: CONSTANTS.ENTRACE_FEE,
                 interval: CONSTANTS.INTERVAL,
                 vrfCoordinator: 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B,
-                subscriptionId: 25282227997181644457469550516787684670840132071604095248955993774845696839809,
+                subscriptionId: 0,
                 gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
                 callbackGasLimit: CONSTANTS.CALLBACK_GAS_LIMIT,
                 link: 0x779877A7B0D9E8603169DdbD7836e478b4624789
@@ -60,5 +60,9 @@ contract HelperConfig is Script {
 
     function getActiveConfig() external view returns (NetworkConfig memory) {
         return s_activeNetworkConfig;
+    }
+
+    function updateConfig(NetworkConfig memory newNetworkConfig) external {
+        s_activeNetworkConfig = newNetworkConfig;
     }
 }
