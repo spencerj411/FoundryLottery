@@ -12,17 +12,24 @@ import {CONSTANTS} from "script/libraries/Constants.sol";
 contract SetupVRF is Script {
     error SetupVRF__SubscriptionRequired();
 
-    HelperConfig helperConfig;
+    HelperConfig public helperConfig;
+
+    constructor(HelperConfig _helperConfig) {
+        if (address(_helperConfig) == address(0)) {
+            helperConfig = new HelperConfig();
+        } else {
+            helperConfig = _helperConfig;
+        }
+    }
 
     function run() external {
-        helperConfig = new HelperConfig();
         createSubscription();
         fundSubscription();
-        addConsumer();
+        addConsumer(address(0));
     }
 
     function createSubscription()
-        private
+        public
         returns (HelperConfig.NetworkConfig memory)
     {
         HelperConfig.NetworkConfig memory activeConfig = helperConfig
@@ -79,21 +86,40 @@ contract SetupVRF is Script {
         );
     }
 
-    function addConsumer() private {
+    function addConsumer(address deployedRaffleContract) public {
         HelperConfig.NetworkConfig memory activeConfig = helperConfig
             .getActiveConfig();
         if (activeConfig.subscriptionId == 0) {
-            createSubscription();
-            activeConfig = helperConfig.getActiveConfig();
+            console.log("creating new subscription before adding consumer");
+            activeConfig = createSubscription();
+        } else {
+            console.log(
+                "subscription id before adding consumer",
+                activeConfig.subscriptionId
+            );
         }
 
-        address mostRecentlyDeployedRaffleContract = DevOpsTools
-            .get_most_recent_deployment("Raffle", block.chainid);
+        address mostRecentlyDeployedRaffleContract = deployedRaffleContract ==
+            address(0)
+            ? DevOpsTools.get_most_recent_deployment("Raffle", block.chainid)
+            : deployedRaffleContract;
         vm.startBroadcast();
         VRFCoordinatorV2_5Mock(activeConfig.vrfCoordinator).addConsumer(
             activeConfig.subscriptionId,
             mostRecentlyDeployedRaffleContract
         );
         vm.stopBroadcast();
+        console.log(
+            "consumer successfully added to subscription",
+            mostRecentlyDeployedRaffleContract
+        );
+    }
+
+    function getActiveConfig()
+        external
+        view
+        returns (HelperConfig.NetworkConfig memory)
+    {
+        return helperConfig.getActiveConfig();
     }
 }
