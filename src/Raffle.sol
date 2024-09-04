@@ -122,7 +122,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
                 )
             })
         );
-        // Quiz... is this redundant?
+
         emit RequestedRaffleWinner(requestId);
     }
 
