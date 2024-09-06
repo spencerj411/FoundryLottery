@@ -131,6 +131,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
         uint256[] calldata randomWords
     ) internal override {
         address payable winner = s_players[randomWords[0] % s_players.length];
+        s_recentWinner = winner;
         emit WinnerPicked(winner);
         s_players = new address payable[](0);
         s_lastStartTimestamp = block.timestamp;
@@ -152,5 +153,13 @@ contract Raffle is VRFConsumerBaseV2Plus {
 
     function getPlayers() external view returns (address payable[] memory) {
         return s_players;
+    }
+
+    function getLastStartTimestamp() external view returns (uint256) {
+        return s_lastStartTimestamp;
+    }
+
+    function getRecentWinner() external view returns (address) {
+        return s_recentWinner;
     }
 }

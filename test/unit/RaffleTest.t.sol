@@ -163,9 +163,9 @@ contract RaffleTest is Test {
         assert(uint256(requestId) > 0);
     }
 
-    /* FULLFILLRANDOMWORDS */
+    /* FULFILLRANDOMWORDS */
 
-    function testFullfillRandomWordsCanOnlyExecuteAfterPerformUpkeep(
+    function testFulfillRandomWordsCanOnlyExecuteAfterPerformUpkeep(
         uint256 randomRequestId
     ) external {
         vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);
@@ -173,5 +173,48 @@ contract RaffleTest is Test {
             randomRequestId,
             address(raffle)
         );
+    }
+
+    function testFulfillRandomWordsPicksWinnerSendsMoneyAndResetsRaffle()
+        external
+        raffleEntered
+    {
+        uint256 additionalPlayers = 3;
+        uint256 startingIndex = raffle.getPlayers().length;
+        // Arrange
+        for (
+            uint256 i = startingIndex;
+            i < startingIndex + additionalPlayers;
+            i++
+        ) {
+            address newPlayer = address(uint160(i));
+            hoax(newPlayer, 1 ether); // deals 1 ether to player then pranks player
+            raffle.enterRaffle{value: entranceFee}();
+        }
+        uint256 firstStartTimestamp = raffle.getLastStartTimestamp();
+        address expectedWinner = address(1);
+        uint256 expectedWinnerStartingBalance = expectedWinner.balance;
+
+        // Act
+        vm.recordLogs();
+        raffle.performUpkeep("");
+        Vm.Log[] memory eventEntries = vm.getRecordedLogs();
+        bytes32 requestId = eventEntries[1].topics[1];
+        VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(
+            uint256(requestId),
+            address(raffle)
+        );
+
+        // Assert
+        address recentWinner = raffle.getRecentWinner();
+        Raffle.RaffleState raffleState = raffle.getRaffleState();
+        uint256 winnerBalance = recentWinner.balance;
+        uint256 lastStartTimestamp = raffle.getLastStartTimestamp();
+        uint256 prize = entranceFee * (startingIndex + additionalPlayers);
+
+        assert(recentWinner == expectedWinner);
+        assert(winnerBalance == expectedWinnerStartingBalance + prize);
+        assert(raffleState == Raffle.RaffleState.OPEN);
+        assert(lastStartTimestamp > firstStartTimestamp);
     }
 }

@@ -67,7 +67,7 @@ contract SetupVRF is Script {
             // VRF Coordinator mock gives us a function to mimic funding the mock contract with LINK
             vrfCoordinatorMock.fundSubscription(
                 activeConfig.subscriptionId,
-                CONSTANTS.LINK_FUND_AMOUNT
+                CONSTANTS.LINK_FUND_AMOUNT * 100
             );
             vm.stopBroadcast();
         } else {
