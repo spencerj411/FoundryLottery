@@ -50,6 +50,13 @@ contract RaffleTest is Test {
         _;
     }
 
+    modifier skipForked() {
+        if (block.chainid != CONSTANTS.ANVIL_ID) {
+            return;
+        }
+        _;
+    }
+
     /* RAFFLE */
 
     function testInitialisedRaffleIsOpen() external view {
@@ -167,7 +174,7 @@ contract RaffleTest is Test {
 
     function testFulfillRandomWordsCanOnlyExecuteAfterPerformUpkeep(
         uint256 randomRequestId
-    ) external {
+    ) external skipForked {
         vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);
         VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(
             randomRequestId,
@@ -178,6 +185,7 @@ contract RaffleTest is Test {
     function testFulfillRandomWordsPicksWinnerSendsMoneyAndResetsRaffle()
         external
         raffleEntered
+        skipForked
     {
         uint256 additionalPlayers = 3;
         uint256 startingIndex = raffle.getPlayers().length;
